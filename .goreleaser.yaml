@@ -90,9 +90,9 @@ docker_manifests:
       - *arm64v8_linux_image
 
 archives:
-  - format: tar.gz
-    rlcp: true
-    # this name template makes the OS and Arch compatible with the results of uname.
+  - format_overrides:
+      - formats:
+          - tar.gz
     name_template: >-
       {{ .ProjectName }}_
       {{- title .Os }}_
