@@ -30,7 +30,7 @@ builds:
          -X main.BuildUser={{ .Env.BUILD_USER }} "
 dockers:
   - image_templates:
-    - &amd64_linux_image ghcr.io/openchami/{{.ProjectName}}:{{ .Tag }}-amd64
+      - &amd64_linux_image ghcr.io/openchami/{{.ProjectName}}:{{ .Tag }}-amd64
       - ghcr.io/openchami/{{.ProjectName}}:{{ .Major }}-amd64
       - ghcr.io/openchami/{{.ProjectName}}:{{ .Major }}.{{ .Minor }}-amd64
       # - ghcr.io/openchami/{{.ProjectName}}:latest
