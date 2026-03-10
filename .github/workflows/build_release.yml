@@ -35,6 +35,11 @@ jobs:
           fetch-depth: 1
       - name: Unit Tests
         run: go test -v ./...
+      - name: Set build environment variables
+        run: |
+          echo GO_VERSION=$(go env GOVERSION) >> $GITHUB_ENV
+          echo BUILD_HOST=$(hostname) >> $GITHUB_ENV
+          echo BUILD_USER=$(whoami) >> $GITHUB_ENV
       - name: Release with goreleaser
         uses: goreleaser/goreleaser-action@v6
         env:
