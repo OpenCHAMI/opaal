@@ -12,10 +12,10 @@ jobs:
   build-goreleaser:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.21
+      - name: Set up latest stable Go
         uses: actions/setup-go@v6
         with:
-          go-version: 1.21
+          go-version: stable
       - name: Checkout repo
         uses: actions/checkout@v6
         with:
@@ -35,10 +35,10 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.21
+      - name: Set up latest stable Go
         uses: actions/setup-go@v6
         with:
-          go-version: 1.21
+          go-version: stable
       - name: Checkout repo
         uses: actions/checkout@v6
         with:
