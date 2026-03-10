@@ -16,10 +16,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set up Go 1.21
-        uses: actions/setup-go@v5
+      - name: Set up latest stable Go
+        uses: actions/setup-go@v6
         with:
-          go-version: 1.21
+          go-version: stable
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Docker Login
@@ -36,7 +36,7 @@ jobs:
       - name: Unit Tests
         run: go test -v ./...
       - name: Release with goreleaser
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
