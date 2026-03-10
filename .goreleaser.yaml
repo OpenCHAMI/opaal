@@ -106,7 +106,7 @@ archives:
       - pages/
 
 nfpms:
-  - id: bss
+  - id: opaal
     formats: 
     - deb
     - rpm
@@ -118,10 +118,8 @@ nfpms:
     section: utils
     priority: optional
     contents:
-      - src: dist/bss_{{ .Os }}_{{ if eq .Arch "amd64" }}{{ .Arch }}_{{ .Amd64 }}{{ else if eq .Arch "arm64" }}{{ .Arch }}_{{ .Arm64 }}{{ else }}{{ .Arch }}{{ end }}/boot-script-service
-        dst: /usr/local/bin/bss
-      - src: dist/bss-init_{{ .Os }}_{{ if eq .Arch "amd64" }}{{ .Arch }}_{{ .Amd64 }}{{ else if eq .Arch "arm64" }}{{ .Arch }}_{{ .Arm64 }}{{ else }}{{ .Arch }}{{ end }}/bss-init
-        dst: /usr/local/bin/bss-init
+      - src: dist/opaal_{{ .Os }}_{{ if eq .Arch "amd64" }}{{ .Arch }}_{{ .Amd64 }}{{ else if eq .Arch "arm64" }}{{ .Arch }}_{{ .Arm64 }}{{ else }}{{ .Arch }}{{ end }}/opaal
+        dst: /usr/local/bin/opaal
 
 checksum:
   name_template: 'checksums.txt'
