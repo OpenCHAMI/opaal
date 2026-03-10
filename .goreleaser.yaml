@@ -1,33 +1,98 @@
+version: 2
+project_name: opaal
 before:
   hooks:
     - go mod download
+    - go mod tidy
 builds:
-  - env:
-      - CGO_ENABLED=1
+  - id: opaal
+    binary: opaal
+    env:
+      - CGO_ENABLED=0
     goos:
       - linux
+      - darwin
+      - windows
     goarch:
       - amd64
+      - arm64
+    goamd64:
+      - v3
+    ldflags:
+      - "-s -w -X main.GitCommit={{.Commit}} \
+         -X main.BuildTime={{.Timestamp}} \
+         -X main.Version={{.Version}} \
+         -X main.GitBranch={{.Branch}} \
+         -X main.GitTag={{.Tag}} \
+         -X main.GitState={{ .GitTreeState }} \
+         -X main.BuildHost={{ .Env.BUILD_HOST }} \
+         -X main.GoVersion={{ .Env.GO_VERSION }} \
+         -X main.BuildUser={{ .Env.BUILD_USER }} "
 dockers:
   - image_templates:
-      - ghcr.io/openchami/{{.ProjectName}}:latest
-      - ghcr.io/openchami/{{.ProjectName}}:{{ .Tag }}
-      - ghcr.io/openchami/{{.ProjectName}}:{{ .Major }}
-      - ghcr.io/openchami/{{.ProjectName}}:{{ .Major }}.{{ .Minor }}
+      - &amd64_linux_image ghcr.io/openchami/{{.ProjectName}}:{{ .Tag }}-amd64
+      - ghcr.io/openchami/{{.ProjectName}}:{{ .Major }}-amd64
+      - ghcr.io/openchami/{{.ProjectName}}:{{ .Major }}.{{ .Minor }}-amd64
+      # - ghcr.io/openchami/{{.ProjectName}}:latest
+      # - ghcr.io/openchami/{{.ProjectName}}:{{ .Tag }}
+      # - ghcr.io/openchami/{{.ProjectName}}:{{ .Major }}
+      # - ghcr.io/openchami/{{.ProjectName}}:{{ .Major }}.{{ .Minor }}
+    use: buildx
     build_flag_templates:
       - "--pull"
+      - "--platform=linux/amd64"
       - "--label=org.opencontainers.image.created={{.Date}}"
       - "--label=org.opencontainers.image.title={{.ProjectName}}"
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
       - "--label=org.opencontainers.image.version={{.Version}}"
+    goarch: amd64
+    goamd64: v3
     extra_files:
       - LICENSE.md
       - README.md
       - pages/
+  - image_templates:
+      - &arm64v8_linux_image ghcr.io/openchami/{{.ProjectName}}:{{ .Tag }}-arm64
+      - ghcr.io/openchami/{{.ProjectName}}:{{ .Major }}-arm64
+      - ghcr.io/openchami/{{.ProjectName}}:{{ .Major }}.{{ .Minor }}-arm64
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--platform=linux/arm64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+    goarch: arm64
+    extra_files:
+      - LICENSE.md
+      - README.md
+      - pages/
+docker_manifests:
+  - name_template: "ghcr.io/openchami/{{.ProjectName}}:latest"
+    image_templates:
+      - *amd64_linux_image
+      - *arm64v8_linux_image
+
+  - name_template: "ghcr.io/openchami/{{.ProjectName}}:{{ .Tag }}"
+    image_templates:
+      - *amd64_linux_image
+      - *arm64v8_linux_image
+
+  - name_template: "ghcr.io/openchami/{{.ProjectName}}:{{ .Major }}"
+    image_templates:
+      - *amd64_linux_image
+      - *arm64v8_linux_image
+
+  - name_template: "ghcr.io/openchami/{{.ProjectName}}:{{ .Major }}.{{ .Minor }}"
+    image_templates:
+      - *amd64_linux_image
+      - *arm64v8_linux_image
+
 archives:
-  - format: tar.gz
-    rlcp: true
-    # this name template makes the OS and Arch compatible with the results of uname.
+  - format_overrides:
+      - formats:
+          - tar.gz
     name_template: >-
       {{ .ProjectName }}_
       {{- title .Os }}_
@@ -39,18 +104,36 @@ archives:
       - LICENSE.md
       - README.md
       - pages/
+
+nfpms:
+  - id: opaal
+    formats: 
+    - deb
+    - rpm
+    - apk
+    maintainer: "David Allen <allend@lanl.gov>"
+    description: "OPAAL is a OIDC proxy bridge for creating tokens from trusted external OIDC providers for OpenCHAMI.  Read more at https://www.openchami.org"
+    homepage: "https://www.openchami.org"
+    license: MIT
+    section: utils
+    priority: optional
+    contents:
+      - src: dist/opaal_{{ .Os }}_{{ if eq .Arch "amd64" }}{{ .Arch }}_{{ .Amd64 }}{{ else if eq .Arch "arm64" }}{{ .Arch }}_{{ .Arm64 }}{{ else }}{{ .Arch }}{{ end }}/opaal
+        dst: /usr/local/bin/opaal
+
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ incpatch .Version }}-next"
 changelog:
   sort: asc
   filters:
     exclude:
       - '^docs:'
       - '^test:'
-# release:
-#   github:
-#   name_template: "{{.Version}}"
-#   prerelease: auto
-#   mode: append
+
+
+# The lines beneath this are called `modelines`. See `:help modeline`
+# Feel free to remove those if you don't want/use them.
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=cnqoj

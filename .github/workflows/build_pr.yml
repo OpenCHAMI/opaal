@@ -1,0 +1,50 @@
+name: PR Checks
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  build-goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up latest stable Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: stable
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-tags: 1
+          fetch-depth: 0
+      - name: Set build environment variables
+        run: |
+          echo GO_VERSION=$(go env GOVERSION) >> $GITHUB_ENV
+          echo BUILD_HOST=$(hostname) >> $GITHUB_ENV
+          echo BUILD_USER=$(whoami) >> $GITHUB_ENV
+      - name: Build with goreleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          version: '~> v2'
+          args: release --snapshot --clean --skip publish
+        id: goreleaser
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up latest stable Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: stable
+      - name: Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-tags: 1
+          fetch-depth: 0
+      - name: Run unit-tests
+        run: go test -v ./...
