@@ -24,7 +24,7 @@ builds:
          -X main.Version={{.Version}} \
          -X main.GitBranch={{.Branch}} \
          -X main.GitTag={{.Tag}} \
-         -X main.GitState={{ .Env.GIT_STATE }} \
+         -X main.GitState={{ .GitTreeState }} \
          -X main.BuildHost={{ .Env.BUILD_HOST }} \
          -X main.GoVersion={{ .Env.GO_VERSION }} \
          -X main.BuildUser={{ .Env.BUILD_USER }} "
