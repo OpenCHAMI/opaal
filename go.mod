@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	github.com/davidallendj/go-utils v0.0.0-20240417195221-95765f3b9bad
-	github.com/go-chi/chi/v5 v5.0.12
+	github.com/go-chi/chi/v5 v5.2.2
 	github.com/google/uuid v1.6.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lestrrat-go/jwx/v2 v2.0.21
