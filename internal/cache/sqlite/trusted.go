@@ -20,7 +20,7 @@ func CreateTrustedIfNotExists(path string) (*sqlx.DB, error) {
 		PRIMARY KEY (id)
 	);
 	`
-	db, err := sqlx.Open("sqlite3", path)
+	db, err := sqlx.Open("sqlite", path)
 	if err != nil {
 		return nil, fmt.Errorf("could not open database: %v", err)
 	}
@@ -69,7 +69,7 @@ func InsertTrustedIssuer(path string, issuer *oauth.TrustedIssuer) error {
 }
 
 func GetTrustedIssuer(path string, issuer string) (*oauth.TrustedIssuer, error) {
-	db, err := sqlx.Open("sqlite3", path)
+	db, err := sqlx.Open("sqlite", path)
 	if err != nil {
 		return nil, fmt.Errorf("could not open database: %v", err)
 	}
@@ -86,7 +86,7 @@ func DeleteTrustedIssuer(path string, ids []string) error {
 	if ids == nil {
 		return fmt.Errorf("no probe results found")
 	}
-	db, err := sqlx.Open("sqlite3", path)
+	db, err := sqlx.Open("sqlite", path)
 	if err != nil {
 		return fmt.Errorf("could not open database: %v", err)
 	}
