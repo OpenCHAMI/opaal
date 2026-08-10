@@ -21,7 +21,7 @@ func CreateOAuthClientsIfNotExists(path string) (*sqlx.DB, error) {
 		PRIMARY KEY (id)
 	);
 	`
-	db, err := sqlx.Open("sqlite3", path)
+	db, err := sqlx.Open("sqlite", path)
 	if err != nil {
 		return nil, fmt.Errorf("could not open database: %v", err)
 	}
@@ -78,7 +78,7 @@ func InsertOAuthClients(path string, clients *[]oauth.Client) error {
 }
 
 func GetOAuthClient(path string, id string) (*oauth.Client, error) {
-	db, err := sqlx.Open("sqlite3", path)
+	db, err := sqlx.Open("sqlite", path)
 	if err != nil {
 		return nil, fmt.Errorf("could not open database: %v", err)
 	}
@@ -92,7 +92,7 @@ func GetOAuthClient(path string, id string) (*oauth.Client, error) {
 }
 
 func GetOAuthClients(path string) ([]oauth.Client, error) {
-	db, err := sqlx.Open("sqlite3", path)
+	db, err := sqlx.Open("sqlite", path)
 	if err != nil {
 		return nil, fmt.Errorf("could not open database: %v", err)
 	}
@@ -109,7 +109,7 @@ func UpdateOAuthClient(path string, clients *[]oauth.Client) error {
 	if clients == nil {
 		return fmt.Errorf("clients is nil")
 	}
-	db, err := sqlx.Open("sqlite3", path)
+	db, err := sqlx.Open("sqlite", path)
 	if err != nil {
 		return fmt.Errorf("could not open database: %v", err)
 	}
@@ -133,7 +133,7 @@ func DeleteOAuthClients(path string, clientIds []string) error {
 	if clientIds == nil {
 		return fmt.Errorf("no probe results found")
 	}
-	db, err := sqlx.Open("sqlite3", path)
+	db, err := sqlx.Open("sqlite", path)
 	if err != nil {
 		return fmt.Errorf("could not open database: %v", err)
 	}

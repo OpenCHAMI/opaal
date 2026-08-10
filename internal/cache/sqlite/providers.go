@@ -31,7 +31,7 @@ func CreateIdentityProvidersIfNotExists(path string) (*sqlx.DB, error) {
 		PRIMARY KEY (issuer)
 	);
 	`
-	db, err := sqlx.Open("sqlite3", path)
+	db, err := sqlx.Open("sqlite", path)
 	if err != nil {
 		return nil, fmt.Errorf("could not open database: %v", err)
 	}
@@ -104,7 +104,7 @@ func InsertIdentityProviders(path string, providers *[]oidc.IdentityProvider) er
 }
 
 func GetIdentityProvider(path string, issuer string) (*oidc.IdentityProvider, error) {
-	db, err := sqlx.Open("sqlite3", path)
+	db, err := sqlx.Open("sqlite", path)
 	if err != nil {
 		return nil, fmt.Errorf("could not open database: %v", err)
 	}
@@ -118,7 +118,7 @@ func GetIdentityProvider(path string, issuer string) (*oidc.IdentityProvider, er
 }
 
 func GetIdentityProviders(path string) ([]oidc.IdentityProvider, error) {
-	db, err := sqlx.Open("sqlite3", path)
+	db, err := sqlx.Open("sqlite", path)
 	if err != nil {
 		return nil, fmt.Errorf("could not open database: %v", err)
 	}
@@ -135,7 +135,7 @@ func DeleteIdentityProviders(path string, results *[]oidc.IdentityProvider) erro
 	if results == nil {
 		return fmt.Errorf("no probe results found")
 	}
-	db, err := sqlx.Open("sqlite3", path)
+	db, err := sqlx.Open("sqlite", path)
 	if err != nil {
 		return fmt.Errorf("could not open database: %v", err)
 	}
